@@ -1,5 +1,17 @@
 Backbone.setDomLibrary($);
 
+// Initialize any properties on the router object.
+// On the client this will be called automatically by
+// the default initialize method.
+Backbone.Router.prototype.initializeState = function(app) {};
+
+// Initialize the router.
+// This differs from the upstream backbone method, in that
+// we automatically call the initializeAssets method for you.
+Backbone.Router.prototype.initialize = function(app) {
+    Backbone.Router.prototype.initializeState.apply(this, arguments)
+};
+
 Backbone.Router.prototype.route = function(route, name, callback) {
     Backbone.history || (Backbone.history = new Backbone.History);
     if (!_.isRegExp(route)) route = this._routeToRegExp(route);
