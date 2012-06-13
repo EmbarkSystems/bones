@@ -28,9 +28,11 @@ $(function() {
         }
     };
 
+    Bones.routers = {};
+
     Bones.start = function(options) {
         for (var k in routers) {
-            new routers[k];
+            Bones.routers[k] = new routers[k];
         }
 
         Backbone.history.start(options);
