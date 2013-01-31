@@ -1,3 +1,4 @@
+var path = require('path');
 var env = process.env.NODE_ENV || 'development';
 var headers = { 'Content-Type': 'application/json' };
 
@@ -12,15 +13,15 @@ var options = {
 // TODO: This should be moved to the initialize method!
 server.prototype.assets = {
     vendor: new mirror([
-        require.resolve('bones/assets/jquery'),
+        require.resolve(path.join(__dirname, '../assets/jquery')),
         require.resolve('underscore'),
         require.resolve('backbone')
     ], { type: '.js' }),
     core: new mirror([
-        require.resolve('bones/shared/utils'),
-        require.resolve('bones/client/utils'),
-        require.resolve('bones/shared/backbone'),
-        require.resolve('bones/client/backbone')
+        require.resolve(path.join(__dirname, '../shared/utils')),
+        require.resolve(path.join(__dirname, '../client/utils')),
+        require.resolve(path.join(__dirname, '../shared/backbone')),
+        require.resolve(path.join(__dirname, '../client/backbone'))
     ], { type: '.js' }),
     models: new mirror([], options),
     views: new mirror([], options),
@@ -29,7 +30,7 @@ server.prototype.assets = {
 };
 
 if (env === 'development') {
-    server.prototype.assets.core.unshift(require.resolve('bones/assets/debug'));
+    server.prototype.assets.core.unshift(require.resolve(path.join(__dirname, '../assets/debug')));
 }
 
 // TODO: This should be moved to the initialize method!
@@ -109,6 +110,9 @@ server.prototype.loadCollection = function(req, res, next) {
 server.prototype.loadModel = function(req, res, next) {
     var name = req.params.model;
     if (name in this.models) {
+        // `id` in param wins over `id` in request body.
+        if (req.body && 'id' in req.body && req.params.id)
+            req.body.id = req.params.id;
         // Pass any querystring paramaters to the model.
         req.model = new this.models[name]({ id: req.params.id }, req.query);
     }
@@ -143,9 +147,12 @@ server.prototype.saveModel = function(req, res, next) {
 
 server.prototype.delModel = function(req, res, next) {
     if (!req.model) return next();
+    if (req.body && !req.model.set(req.body, {
+        error: function(model, err) { next(err); }
+    })) return;
     req.model.destroy({
         success: function(model, resp) {
-            res.send({}, headers);
+            res.send(resp, headers);
         },
         error: function(model, err) {
             var error = err instanceof Object ? err.message : err;
