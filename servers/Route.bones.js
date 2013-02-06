@@ -39,8 +39,8 @@ server.prototype.assets.all = new mirror([
     server.prototype.assets.core,
     server.prototype.assets.routers,
     server.prototype.assets.models,
-    server.prototype.assets.views,
-    server.prototype.assets.templates
+    server.prototype.assets.templates,
+    server.prototype.assets.views
 ], { type: '.js' });
 
 // Stores models, views served by this server.
