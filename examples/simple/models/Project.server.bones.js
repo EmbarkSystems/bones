@@ -56,7 +56,7 @@ models.Project.prototype.sync = function(method, model, options) {
         if (err) return options.error(err);
         fetchReadme(function(err) {
             if (err) return options.error(err);
-            options.success(resp);
+            options.success(model, resp, options);
         });
     });
 };

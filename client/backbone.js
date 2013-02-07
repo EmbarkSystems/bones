@@ -1,4 +1,4 @@
-Backbone.setDomLibrary($);
+Backbone.$ = $;
 
 // Initialize any properties on the router object.
 // On the client this will be called automatically by

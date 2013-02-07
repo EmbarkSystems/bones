@@ -4,7 +4,7 @@ models['Page'].augment({
             options.error();
         } else {
             model.set({ method: method });
-            options.success(model);
+            options.success(model, model.toJSON(), options);
         }
     }
 });

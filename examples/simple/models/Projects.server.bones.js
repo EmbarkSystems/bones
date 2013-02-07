@@ -15,6 +15,6 @@ models.Projects.prototype.sync = function(method, model, options) {
                 version: ver
             });
         });
-        options.success(models);
+        options.success(model, models, options);
     });
 };
