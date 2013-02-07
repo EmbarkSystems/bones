@@ -48,37 +48,17 @@ Backbone.csrf = function(path, timeout) {
 // must be used server-side to invalidate requests without this CSRF
 // protection. The original `Backbone.sync` cannot be reused because it does
 // not send a request body for DELETE requests.
-Backbone.sync = function(method, model, options) {
-    function getUrl(object) {
-        if (!(object && object.url)) throw new Error("A 'url' property or function must be specified");
-        return _.isFunction(object.url) ? object.url() : object.url;
+Backbone.sync = _.wrap(Backbone.sync, function(_sync, method, model, options) {
+    // Throw an error when a URL is needed, and none is supplied.
+    var urlError = function() {
+        throw new Error('A "url" property or function must be specified');
     };
-
-    var type = {
-        'create': 'POST',
-        'update': 'PUT',
-        'delete': 'DELETE',
-        'read'  : 'GET'
-    }[method];
 
     if (method !== 'read') {
-        var modelJSON = model.toJSON ? model.toJSON() : model;
-        modelJSON['bones.token'] = Backbone.csrf(getUrl(model));
-        modelJSON = JSON.stringify(modelJSON);
+        var url = _.result(model, 'url') || urlError();
+        var modelJSON = model.toJSON ? model.toJSON(options) : model;
+        modelJSON['bones.token'] = Backbone.csrf(url);
+        options.data = JSON.stringify(modelJSON);
     }
-
-    // Default JSON-request options.
-    var params = {
-        url:          getUrl(model),
-        type:         type,
-        contentType:  'application/json',
-        data:         (modelJSON || null),
-        dataType:     'json',
-        processData:  false,
-        success:      options.success,
-        error:        options.error
-    };
-
-    // Make the request.
-    return $.ajax(params);
-};
+    return _sync.call(this, method, model, options);
+});
