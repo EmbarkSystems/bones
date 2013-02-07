@@ -13,7 +13,7 @@
     "dependencies": {
         "underscore": "~1.4.4",
         "express": "~2.5.4",
-        "backbone": "0.9.2",
+        "backbone": "0.9.10",
         "jquery": "1.8.x",
         "optimist": "0.3.x",
         "mirror": "0.3.x"

@@ -1,4 +1,4 @@
-Backbone.setDomLibrary($);
+Backbone.$ = $;
 
 Backbone.Router.prototype.route = function(route, name, callback) {
     Backbone.history || (Backbone.history = new Backbone.History);
