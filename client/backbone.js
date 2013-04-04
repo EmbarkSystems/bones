@@ -11,7 +11,7 @@ Backbone.Router.prototype.initializeState = function(app) {};
 Backbone.Router.prototype.initialize = function(app) {
    this.initializeState.apply(this, arguments)
 };
-
+/*
 Backbone.Router.prototype.route = function(route, name, callback) {
     Backbone.history || (Backbone.history = new Backbone.History);
     if (!_.isRegExp(route)) route = this._routeToRegExp(route);
@@ -20,7 +20,7 @@ Backbone.Router.prototype.route = function(route, name, callback) {
         callback.apply(this, args);
         this.trigger.apply(this, ['route:' + name].concat(args));
     }, this));
-};
+};*/
 
 // Generate CSRF protection token that is valid for the specified amount of
 // msec. The default is 1 second. Callers should provide the request path to
